@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "crine",
+    "name": "GamingTable",
+    "description": "Minecraft 1.8 Utility mod",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://crine.github.io",
+    "updateUrl": "",
+    "authorList": ["shxp3"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
