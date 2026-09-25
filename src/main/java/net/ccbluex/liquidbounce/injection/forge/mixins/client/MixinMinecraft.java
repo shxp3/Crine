@@ -4,7 +4,6 @@ import jline.internal.Nullable;
 import net.ccbluex.liquidbounce.Crine;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.client.Patcher;
-import net.ccbluex.liquidbounce.features.module.modules.combat.TickBase;
 import net.ccbluex.liquidbounce.features.module.modules.visual.FreeLook;
 import net.ccbluex.liquidbounce.injection.access.StaticStorage;
 import net.ccbluex.liquidbounce.utils.CPSCounter;
@@ -338,37 +337,8 @@ public abstract class MixinMinecraft {
 
         for (int j = 0; j < this.timer.elapsedTicks; ++j)
         {
-            if(Minecraft.getMinecraft().thePlayer != null) {
-                boolean skip = false;
-
-                if(j == 0) {
-                    TickBase tickBase = Crine.moduleManager.getModule(TickBase.class);
-
-                    if(tickBase.getState()) {
-                        int extraTicks = tickBase.getExtraTicks();
-
-                        if(extraTicks == -1) {
-                            skip = true;
-                        } else {
-                            if(extraTicks > 0) {
-                                for(int aa = 0; aa < extraTicks; aa++) {
-                                    this.runTick();
-                                }
-
-                                tickBase.setFreezing(true);
-                            }
-                        }
-                    }
-                }
-
-                if(!skip) {
-                    this.runTick();
-                }
-            } else {
-                this.runTick();
-            }
+            this.runTick();
         }
-
         this.mcProfiler.endStartSection("preRenderErrors");
         long i1 = System.nanoTime() - l;
         this.checkGLError("Pre render");

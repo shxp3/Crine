@@ -166,10 +166,11 @@ class GuiWorldList(private val prevGui: GuiScreen) : GuiScreen() {
                     RenderUtils.drawImage(icon, iconX.toInt(), iconY.toInt(),
                         iconSize.toInt(), iconSize.toInt())
                 } else {
-                    RoundedUtil.drawRound(iconX, iconY, iconSize, iconSize, 5f, Color(22, 24, 34, 200))
-                    RoundedUtil.drawGradientRound(iconX, iconY, iconSize, iconSize, 5f,
-                        ThemedUI.withAlpha(accent, 40), ThemedUI.withAlpha(accent, 70),
-                        ThemedUI.withAlpha(ThemedUI.accent2(), 25), ThemedUI.withAlpha(ThemedUI.accent2(), 50))
+                    RoundedUtil.drawRound(iconX, iconY, iconSize, iconSize, 4f, Color(16, 19, 26, 220))
+                    RoundedUtil.drawRoundOutline(iconX, iconY, iconSize, iconSize, 4f, 1f,
+                        Color(0, 0, 0, 0), Color(36, 42, 56, 255))
+                    RoundedUtil.drawRound(iconX + 3f, iconY + 3f, 2f, iconSize - 6f, 1f,
+                        ThemedUI.withAlpha(accent, 160))
                     val letter = w.displayName.trim().take(1).uppercase().ifEmpty { "?" }
                     Fonts.SFBold40.drawStringWithShadow(letter,
                         iconX + iconSize / 2f - Fonts.SFBold40.getStringWidth(letter) / 2f,
@@ -206,8 +207,8 @@ class GuiWorldList(private val prevGui: GuiScreen) : GuiScreen() {
             val trackX = innerX + innerW + 7f
             val thumbH = (viewH / contentH * viewH).coerceAtLeast(22f)
             val thumbY = listTop + (scrollOffset / (contentH - viewH)) * (viewH - thumbH)
-            RoundedUtil.drawRound(trackX, listTop, 2.5f, viewH, 1.2f, Color(255, 255, 255, 14))
-            RoundedUtil.drawRound(trackX, thumbY, 2.5f, thumbH, 1.2f, ThemedUI.withAlpha(accent, 160))
+            RoundedUtil.drawRound(trackX, listTop, 2f, viewH, 1f, Color(28, 32, 44, 255))
+            RoundedUtil.drawRound(trackX, thumbY, 2f, thumbH, 1f, ThemedUI.withAlpha(accent, 190))
         }
 
         if (worlds.isEmpty()) {

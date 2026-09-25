@@ -3,7 +3,6 @@ package net.ccbluex.liquidbounce.utils
 import com.google.gson.JsonObject
 import net.ccbluex.liquidbounce.Crine
 import net.ccbluex.liquidbounce.features.command.CommandManager
-import net.ccbluex.liquidbounce.features.module.modules.player.KillSay
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.minecraft.client.Minecraft
 import net.minecraft.util.IChatComponent
@@ -62,10 +61,8 @@ ClientUtils : MinecraftInstance() {
         Crine.scriptManager.enableScripts()
         Fonts.loadFonts()
         Crine.configManager.load(Crine.configManager.nowConfig, false)
-        KillSay.loadFile()
         Crine.fileManager.loadConfig(Crine.fileManager.accountsConfig)
         Crine.fileManager.loadConfig(Crine.fileManager.friendsConfig)
-        Crine.fileManager.loadConfig(Crine.fileManager.xrayConfig)
         Crine.fileManager.loadConfig(Crine.fileManager.themeConfig)
         Crine.fileManager.loadConfig(Crine.fileManager.clienthudConfig)
         Crine.isStarting = false

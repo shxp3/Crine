@@ -6,8 +6,6 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.client.hud.HUDModule
-import net.ccbluex.liquidbounce.features.module.modules.combat.*
-import net.ccbluex.liquidbounce.features.module.modules.player.Scaffold
 import net.ccbluex.liquidbounce.features.value.BoolValue
 import net.ccbluex.liquidbounce.features.value.FloatValue
 import net.ccbluex.liquidbounce.features.value.IntegerValue
@@ -115,11 +113,11 @@ object KeyStrokes : HUDModule() {
     }
 
     private fun leftClick(key: Boolean): Boolean {
-        return if (mc.currentScreen != null) false else if (KillAura.state && KillAura.currentTarget != null || SilentAura.state && SilentAura.target != null || AutoClicker.state && AutoClicker.canLeftClick) MouseUtils.leftClicked else key
+        return if (mc.currentScreen != null) false else if (MouseUtils.leftClicked) MouseUtils.leftClicked else key
     }
 
     private fun rightClick(key: Boolean): Boolean {
-        return if (mc.currentScreen != null) false else if (BlockHit.state || Scaffold.state || RightClicker.state && RightClicker.canRightClick) MouseUtils.rightClicked else key
+        return if (mc.currentScreen != null) false else if (MouseUtils.rightClicked) MouseUtils.rightClicked else key
     }
 
     private fun renderKey(

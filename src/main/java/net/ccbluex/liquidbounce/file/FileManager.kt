@@ -18,7 +18,6 @@ class FileManager : MinecraftInstance() {
     val legacySettingsDir = File(dir, "legacy-settings.json")
     val accountsConfig = AccountsConfig(File(dir, "accounts.json"))
     var friendsConfig = FriendsConfig(File(dir, "friends.json"))
-    val xrayConfig = XRayConfig(File(dir, "xray-blocks.json"))
     val subscriptsConfig = ScriptConfig(File(dir, "subscripts.json"))
     val specialConfig = SpecialConfig(File(dir, "special.json"))
     val themeConfig = ThemeConfig(File(dir, "themeColor.json"))

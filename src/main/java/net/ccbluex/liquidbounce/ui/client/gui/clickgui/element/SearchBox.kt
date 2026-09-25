@@ -1,8 +1,9 @@
 package net.ccbluex.liquidbounce.ui.client.gui.clickgui.element
 
-import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.minecraft.client.gui.GuiTextField
 
-class SearchBox(componentId: Int, x: Int, y: Int, width: Int, height: Int): GuiTextField(componentId, Fonts.Nova40, x, y, width, height) {
-    override fun getEnableBackgroundDrawing() = false
+class SearchBox(id: Int, x: Int, y: Int, w: Int, h: Int) : GuiTextField(id, net.minecraft.client.Minecraft.getMinecraft().fontRendererObj, x, y, w, h) {
+    init {
+        enableBackgroundDrawing = false
+    }
 }

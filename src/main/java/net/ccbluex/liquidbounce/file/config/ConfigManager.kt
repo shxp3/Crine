@@ -3,7 +3,6 @@ package net.ccbluex.liquidbounce.file.config
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import net.ccbluex.liquidbounce.Crine
-import net.ccbluex.liquidbounce.features.module.modules.world.Target
 import net.ccbluex.liquidbounce.features.value.*
 import net.ccbluex.liquidbounce.file.FileManager
 import net.ccbluex.liquidbounce.utils.ClassUtils
@@ -170,26 +169,6 @@ class ConfigManager {
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                    }
-
-                    "targetPlayer", "targetPlayers" -> {
-                        Target.playerValue.set(args[1].equals("true", ignoreCase = true))
-                    }
-
-                    "targetMobs" -> {
-                        Target.mobValue.set(args[1].equals("true", ignoreCase = true))
-                    }
-
-                    "targetAnimals" -> {
-                        Target.animalValue.set(args[1].equals("true", ignoreCase = true))
-                    }
-
-                    "targetInvisible" -> {
-                        Target.invisibleValue.set(args[1].equals("true", ignoreCase = true))
-                    }
-
-                    "targetDead" -> {
-                        Target.deadValue.set(args[1].equals("true", ignoreCase = true))
                     }
 
                     else -> {

@@ -6,7 +6,6 @@ import net.ccbluex.liquidbounce.event.Render3DEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.features.module.modules.world.BedAura
 import net.ccbluex.liquidbounce.features.value.BoolValue
 import net.ccbluex.liquidbounce.features.value.ColorValue
 import net.ccbluex.liquidbounce.features.value.FloatValue
@@ -32,7 +31,6 @@ class BlockOverlay : Module() {
     private val currentBlock: BlockPos?
         get() {
             val blockPos = mc.objectMouseOver?.blockPos ?: return null
-            if (BedAura.state && BedAura.pos != null) return BedAura.pos
             if (canBeClicked(blockPos) && mc.theWorld.worldBorder.contains(blockPos)) {
                 return blockPos
             }

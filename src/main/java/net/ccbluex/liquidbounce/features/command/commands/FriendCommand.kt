@@ -3,7 +3,6 @@ package net.ccbluex.liquidbounce.features.command.commands
 
 import net.ccbluex.liquidbounce.Crine
 import net.ccbluex.liquidbounce.features.command.Command
-import net.ccbluex.liquidbounce.features.module.modules.combat.AntiBot
 import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 
@@ -46,7 +45,7 @@ class FriendCommand : Command("friend", arrayOf("friends")) {
                          var added = 0
 
                          mc.theWorld.playerEntities
-                             .filter { !AntiBot.isBot(it) && it.displayName.formattedText.contains(coloredRegex, false) }
+                             .filter { it.displayName.formattedText.contains(coloredRegex, false) }
                              .forEach {
                                  if (friendsConfig.addFriend(it.name)) {
                                      added++

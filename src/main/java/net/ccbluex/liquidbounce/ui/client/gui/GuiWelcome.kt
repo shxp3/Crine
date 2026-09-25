@@ -3,18 +3,15 @@ package net.ccbluex.liquidbounce.ui.client.gui
 import net.ccbluex.liquidbounce.Crine
 import net.ccbluex.liquidbounce.ui.client.gui.colortheme.ClientTheme
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.RoundedUtil
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.input.Keyboard
-import org.lwjgl.opengl.GL11
 import java.awt.Color
-import kotlin.math.min
-import kotlin.math.sin
 
 /**
- * Startup splash shown once before [GuiMainMenu]. Press SPACE to continue.
+ * Crine 1.0 startup splash — flat line style.
+ * Centered flat card, version badge, minimal progress line.
  */
 class GuiWelcome : GuiScreen() {
 
@@ -32,99 +29,103 @@ class GuiWelcome : GuiScreen() {
         val sw = width.toFloat()
         val sh = height.toFloat()
         val accent = ClientTheme.getColor(0)
-        val accent2 = ClientTheme.getColor(10)
         val now = System.currentTimeMillis()
         val t = (now - openMs) / 1000f
 
-        val leaveT = if (leaving) ((now - leaveStartMs) / 1000f / 0.55f).coerceIn(0f, 1f) else 0f
+        val leaveT = if (leaving) ((now - leaveStartMs) / 1000f / 0.4f).coerceIn(0f, 1f) else 0f
         val leaveEase = leaveT * leaveT * (3f - 2f * leaveT)
-        val globalIn = ThemedUI.stagger(t, 0, 0f, 0.55f)
 
-        // Background fades with leave
-        val bgA = (1f - leaveEase * 0.85f)
-        drawRect(0, 0, width, height, Color(5, 6, 10, 255).rgb)
-        drawRadial(sw * 0.5f, sh * 0.42f, min(sw, sh) * 0.55f, accent, (42 * bgA * globalIn).toInt())
-        drawRadial(sw * 0.22f, sh * 0.72f, min(sw, sh) * 0.28f, accent2, (18 * bgA * globalIn).toInt())
-        drawRadial(sw * 0.82f, sh * 0.18f, min(sw, sh) * 0.22f, accent, (14 * bgA * globalIn).toInt())
-        RenderUtils.drawGradientSidewaysV(0.0, 0.0, sw.toDouble(), 90.0, Color(0, 0, 0, 130).rgb, Color(0, 0, 0, 0).rgb)
-        RenderUtils.drawGradientSidewaysV(0.0, (sh - 110).toDouble(), sw.toDouble(), sh.toDouble(), Color(0, 0, 0, 0).rgb, Color(0, 0, 0, 160).rgb)
+        ThemedBackground.draw(width, height, mouseX, mouseY)
 
-        // Staggered content layers
         val nameA = ThemedUI.stagger(t, 0, 0.05f, 0.5f) * (1f - leaveEase)
-        val verA = ThemedUI.stagger(t, 1, 0.22f, 0.45f) * (1f - leaveEase)
-        val tagA = ThemedUI.stagger(t, 2, 0.22f, 0.45f) * (1f - leaveEase)
-        val promptA = ThemedUI.stagger(t, 3, 0.22f, 0.45f) * (1f - leaveEase)
-        val footA = ThemedUI.stagger(t, 4, 0.22f, 0.45f) * (1f - leaveEase)
+        val cardA = ThemedUI.stagger(t, 1, 0.12f, 0.5f) * (1f - leaveEase)
+        val promptA = ThemedUI.stagger(t, 2, 0.14f, 0.45f) * (1f - leaveEase)
+        val footA = ThemedUI.stagger(t, 3, 0.14f, 0.45f) * (1f - leaveEase)
 
-        val leaveSlide = leaveEase * 40f
-        val leaveScale = 1f - leaveEase * 0.08f
+        val cx = sw / 2f
+        val cardW = 360f.coerceAtMost(sw - 32f)
+        val cardH = 168f
+        val cardX = cx - cardW / 2f
+        var cardY = sh * 0.5f - cardH / 2f - 24f + (1f - cardA) * 18f + leaveEase * -24f
 
-        GL11.glPushMatrix()
-        GL11.glTranslatef(sw / 2f, sh * 0.42f, 0f)
-        GL11.glScalef(leaveScale, leaveScale, 1f)
-        GL11.glTranslatef(-sw / 2f, -sh * 0.42f - leaveSlide, 0f)
+        // flat card
+        if (cardA > 0.02f) {
+            RoundedUtil.drawRound(cardX, cardY, cardW, cardH, 8f, Color(12, 15, 21, (242 * cardA).toInt()))
+            RoundedUtil.drawRoundOutline(cardX, cardY, cardW, cardH, 8f, 1f,
+                Color(0, 0, 0, 0), Color(32, 38, 50, (255 * cardA).toInt()))
+            // top tick + baseline
+            RoundedUtil.drawRound(cardX + 14f, cardY + 9f, 30f, 2f, 1f,
+                Color(accent.red, accent.green, accent.blue, (210 * cardA).toInt()))
+            RoundedUtil.drawRound(cardX + 14f, cardY + cardH - 28f, cardW - 28f, 1f, 0.5f,
+                Color(30, 36, 48, (255 * cardA).toInt()))
+        }
 
         val titleFont = Fonts.Nunito60
-        val name = Crine.CLIENT_NAME
+        val name = "Crine"
         val nameW = titleFont.getStringWidth(name)
-        val nameX = (sw - nameW) / 2f
-        val nameY = sh * 0.34f - (1f - nameA) * 28f
+        val nameX = cx - nameW / 2f
+        val nameY = cardY + 20f + (1f - nameA) * 12f
+        titleFont.drawStringWithShadow(name, nameX, nameY,
+            Color(245, 246, 252, (255 * nameA).toInt()).rgb)
+        RoundedUtil.drawRound(nameX + nameW + 5f, nameY + titleFont.FONT_HEIGHT - 7f, 5f, 5f, 1f,
+            Color(accent.red, accent.green, accent.blue, (235 * nameA).toInt()))
 
-        RoundedUtil.drawGradientRound(
-            nameX - 28f, nameY - 16f, nameW + 56f, titleFont.FONT_HEIGHT + 70f, 16f,
-            Color(accent.red, accent.green, accent.blue, (18 * nameA).toInt()),
-            Color(accent.red, accent.green, accent.blue, (8 * nameA).toInt()),
-            Color(accent2.red, accent2.green, accent2.blue, (6 * nameA).toInt()),
-            Color(accent2.red, accent2.green, accent2.blue, (14 * nameA).toInt())
-        )
+        // version badge — flat outline
+        val ver = "v${Crine.CLIENT_VERSION}"
+        val pillW = Fonts.SFBold30.getStringWidth(ver) + 20f
+        val pillH = Fonts.SFBold30.FONT_HEIGHT + 7f
+        val pillX = cx - pillW / 2f
+        val pillY = nameY + titleFont.FONT_HEIGHT + 8f + (1f - cardA) * 8f
+        if (cardA > 0.02f) {
+            RoundedUtil.drawRound(pillX, pillY, pillW, pillH, 4f, Color(10, 13, 19, (230 * cardA).toInt()))
+            RoundedUtil.drawRoundOutline(pillX, pillY, pillW, pillH, 4f, 1f,
+                Color(0, 0, 0, 0), Color(44, 50, 66, (255 * cardA).toInt()))
+            Fonts.SFBold30.drawString(ver, pillX + pillW / 2f - Fonts.SFBold30.getStringWidth(ver) / 2f,
+                pillY + pillH / 2f - Fonts.SFBold30.FONT_HEIGHT / 2f,
+                Color(200, 205, 220, (235 * cardA).toInt()).rgb, false)
+        }
 
-        titleFont.drawStringWithShadow(
-            name, nameX, nameY,
-            Color(accent.red, accent.green, accent.blue, (255 * nameA).toInt()).rgb
-        )
+        val tag = "precision  ·  control  ·  flow"
+        Fonts.SFBold30.drawString(tag, cx - Fonts.SFBold30.getStringWidth(tag) / 2f,
+            pillY + pillH + 9f + (1f - cardA) * 6f,
+            Color(130, 135, 152, (185 * cardA).toInt()).rgb, false)
 
-        val ver = Crine.CLIENT_VERSION
-        val verFont = Fonts.SFBold40
-        verFont.drawString(
-            ver,
-            (sw - verFont.getStringWidth(ver)) / 2f,
-            nameY + titleFont.FONT_HEIGHT + 6f + (1f - verA) * 12f,
-            Color(220, 225, 235, (200 * verA).toInt()).rgb,
-            false
-        )
+        // flat progress line inside card bottom
+        if (cardA > 0.05f) {
+            val barW = cardW - 40f
+            val barX = cx - barW / 2f
+            val barY = cardY + cardH - 16f
+            RoundedUtil.drawRound(barX, barY, barW, 2f, 1f, Color(30, 36, 48, (255 * cardA).toInt()))
+            val prog = ((t * 0.55f) % 1.4f).coerceAtMost(1f)
+            val fillW = barW * prog.coerceIn(0f, 1f)
+            if (fillW > 2f) {
+                RoundedUtil.drawRound(barX, barY, fillW, 2f, 1f,
+                    Color(accent.red, accent.green, accent.blue, (220 * cardA).toInt()))
+            }
+        }
 
-        val tag = "Ghost / Blatant Client"
-        val tagFont = Fonts.SFBold35
-        tagFont.drawString(
-            tag,
-            (sw - tagFont.getStringWidth(tag)) / 2f,
-            nameY + titleFont.FONT_HEIGHT + 28f + (1f - tagA) * 14f,
-            Color(160, 165, 180, (170 * tagA).toInt()).rgb,
-            false
-        )
-
-        GL11.glPopMatrix()
-
-        val pulse = (sin(t * 2.4) * 0.5 + 0.5).toFloat()
+        // prompt — flat outline button look
         val prompt = "Press SPACE to continue"
-        val promptFont = Fonts.SFBold40
-        promptFont.drawString(
-            prompt,
-            (sw - promptFont.getStringWidth(prompt)) / 2f,
-            sh * 0.72f + (1f - promptA) * 20f + leaveEase * 30f,
-            Color(240, 240, 250, ((90 + pulse * 140) * promptA).toInt()).rgb,
-            false
-        )
+        val pW = Fonts.SFBold40.getStringWidth(prompt) + 28f
+        val pH = Fonts.SFBold40.FONT_HEIGHT + 12f
+        val pX = cx - pW / 2f
+        val pY = cardY + cardH + 20f + (1f - promptA) * 12f + leaveEase * 20f
+        if (promptA > 0.02f) {
+            RoundedUtil.drawRound(pX, pY, pW, pH, 6f, Color(12, 15, 21, (235 * promptA).toInt()))
+            RoundedUtil.drawRoundOutline(pX, pY, pW, pH, 6f, 1f, Color(0, 0, 0, 0),
+                Color(accent.red, accent.green, accent.blue, (170 * promptA).toInt()))
+            // left tick
+            RoundedUtil.drawRound(pX + 6f, pY + 6f, 2f, pH - 12f, 1f,
+                Color(accent.red, accent.green, accent.blue, (220 * promptA).toInt()))
+            Fonts.SFBold40.drawString(prompt, pX + pW / 2f - Fonts.SFBold40.getStringWidth(prompt) / 2f,
+                pY + pH / 2f - Fonts.SFBold40.FONT_HEIGHT / 2f,
+                Color(235, 236, 245, (240 * promptA).toInt()).rgb, false)
+        }
 
-        val foot = "Free, Based on LiquidBounce"
-        val footFont = Fonts.SFBold24
-        footFont.drawString(
-            foot,
-            (sw - footFont.getStringWidth(foot)) / 2f,
-            sh - 28f + (1f - footA) * 16f + leaveEase * 24f,
-            Color(255, 255, 255, (55 * footA).toInt()).rgb,
-            false
-        )
+        val foot = "Crine 1.0  ·  by ${Crine.CLIENT_CREATOR}"
+        Fonts.SFBold24.drawString(foot, cx - Fonts.SFBold24.getStringWidth(foot) / 2f,
+            sh - 26f + (1f - footA) * 10f + leaveEase * 16f,
+            Color(110, 115, 132, (150 * footA).toInt()).rgb, false)
 
         GlStateManager.resetColor()
 
@@ -152,14 +153,4 @@ class GuiWelcome : GuiScreen() {
     }
 
     override fun doesGuiPauseGame() = false
-
-    private fun drawRadial(cx: Float, cy: Float, radius: Float, color: Color, maxAlpha: Int) {
-        if (maxAlpha < 2) return
-        for (i in 10 downTo 1) {
-            val p = i / 10f
-            val a = (maxAlpha * (1f - p) * (1f - p)).toInt()
-            if (a < 2) continue
-            RenderUtils.drawFilledCircle(cx, cy, radius * p, Color(color.red, color.green, color.blue, a))
-        }
-    }
 }

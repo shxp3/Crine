@@ -6,7 +6,6 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.value.BoolValue
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.ClickGui
 import net.ccbluex.liquidbounce.ui.client.gui.clickgui.DropdownGui
 import net.minecraft.client.settings.GameSettings
 import net.minecraft.client.settings.KeyBinding
@@ -54,6 +53,6 @@ class Patcher : Module() {
         }
     }
     private fun getClientScreen() : Boolean {
-        return mc.currentScreen is ClickGui || mc.currentScreen is DropdownGui
+        return mc.currentScreen is DropdownGui
     }
 }

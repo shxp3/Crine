@@ -23,7 +23,7 @@ object DdTheme {
 
     val panelRadius: Float
         get() = when {
-            isGradient -> 7f
+            isGradient -> 8f
             isOutline  -> 8f
             else       -> 4f
         }
@@ -61,13 +61,13 @@ object DdTheme {
         val r = panelRadius
         val a2 = accent2()
 
-        RoundedUtil.drawRound(x, y, w, h, r, Color(8, 9, 14, 238))
+        RoundedUtil.drawRound(x, y, w, h, r, Color(9, 11, 17, 240))
         RoundedUtil.drawGradientRound(
             x, y, w, h, r,
-            withAlpha(accent, 22),
-            Color(255, 255, 255, 12),
+            withAlpha(accent, 26),
+            Color(255, 255, 255, 10),
             withAlpha(a2, 14),
-            withAlpha(accent, 36)
+            withAlpha(accent, 38)
         )
         val headerH = 16f.coerceAtMost(h)
         RoundedUtil.drawGradientCornerLR(

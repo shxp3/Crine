@@ -5,6 +5,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.value.*
 import net.ccbluex.liquidbounce.ui.client.gui.colortheme.ClientTheme
+import net.ccbluex.liquidbounce.features.module.modules.client.FPSBoost
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.KeybindHelper
@@ -103,9 +104,9 @@ class DropdownGui : GuiScreen() {
     // ── Rendering ─────────────────────────────────────────────────────────────
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        BlurUtils.blurAreaRounded(0F,0F, mc.displayWidth.toFloat(), mc.displayHeight.toFloat(), 0F, 1F)
+        if (!FPSBoost.isLowEnd()) BlurUtils.blurAreaRounded(0F,0F, mc.displayWidth.toFloat(), mc.displayHeight.toFloat(), 0F, 1F)
         // Ambient glows / grid / specks — no solid dark overlay
-        DdBackdrop.draw(width, height)
+        if (!FPSBoost.isLowEnd()) DdBackdrop.draw(width, height)
         val accent = ClientTheme.getColor(1)
 
         // Only iterate panels that are currently visible. Hidden category

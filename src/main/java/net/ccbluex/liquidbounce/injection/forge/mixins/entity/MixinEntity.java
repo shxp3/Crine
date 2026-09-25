@@ -2,8 +2,6 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import net.ccbluex.liquidbounce.Crine;
 import net.ccbluex.liquidbounce.event.StrafeEvent;
-import net.ccbluex.liquidbounce.features.module.modules.combat.HitBox;
-import net.ccbluex.liquidbounce.features.module.modules.movement.MovementCorrection;
 import net.ccbluex.liquidbounce.features.module.modules.visual.FreeLook;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.minecraft.block.Block;
@@ -188,25 +186,9 @@ public abstract class MixinEntity{
             return;
 
         final StrafeEvent strafeEvent = new StrafeEvent(strafe, forward, friction);
-        final MovementCorrection movementCorrection = Crine.moduleManager.getModule(MovementCorrection.class);
         Crine.eventManager.callEvent(strafeEvent);
-        if (movementCorrection.getDoFix()) { //Run MovementCorrection process on Post Strafe 2023/02/15
-            movementCorrection.runStrafeFixLoop(MovementCorrection.INSTANCE.getSilentFix(), strafeEvent);
-        }
         this.rotationYaw = (!Crine.moduleManager.getModule(FreeLook.class).getState() && FreeLook.isEnabled) ? FreeLook.cameraYaw : this.rotationYaw;
         if (strafeEvent.isCancelled())
             callbackInfo.cancel();
-    }
-    @Inject(
-            method = "getCollisionBorderSize",
-            at = @At("HEAD"),
-            cancellable = true
-    )
-    public void getCollisionBorderSize(CallbackInfoReturnable callbackInfoReturnable) {
-        if (Crine.moduleManager.getModule(HitBox.class).getState()) {
-            double hitBox = HitBox.getSize();
-            callbackInfoReturnable.setReturnValue((float) hitBox);
-            callbackInfoReturnable.cancel();
-        }
     }
 }

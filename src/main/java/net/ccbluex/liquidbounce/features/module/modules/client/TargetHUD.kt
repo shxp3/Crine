@@ -4,9 +4,6 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.client.hud.HUDModule
-import net.ccbluex.liquidbounce.features.module.modules.combat.InfiniteAura
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
-import net.ccbluex.liquidbounce.features.module.modules.combat.SilentAura
 import net.ccbluex.liquidbounce.features.value.BoolValue
 import net.ccbluex.liquidbounce.features.value.ListValue
 import net.ccbluex.liquidbounce.ui.client.gui.colortheme.ClientTheme
@@ -54,11 +51,7 @@ object TargetHUD : HUDModule() {
     }
     @EventTarget
     fun onRender2D(event: Render2DEvent) {
-        val actualTarget = if (InfiniteAura.lastTarget != null) InfiniteAura.lastTarget
-        else if (mc.currentScreen is GuiChat) mc.thePlayer
-        else if (KillAura.state && KillAura.currentTarget != null) KillAura.currentTarget
-        else if (SilentAura.state && SilentAura.target != null) SilentAura.target
-        else attackTarget
+        val actualTarget = if (mc.currentScreen is GuiChat) mc.thePlayer else attackTarget
         animProgress += (0.0075F * 0.5F * deltaTime * if (actualTarget != null) -1F else 1F)
         animProgress = animProgress.coerceIn(0F, 1F)
         if (actualTarget != null) {

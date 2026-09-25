@@ -1,9 +1,6 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
 import net.ccbluex.liquidbounce.Crine;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura2;
-import net.ccbluex.liquidbounce.features.module.modules.combat.SilentAura;
 import net.ccbluex.liquidbounce.features.module.modules.visual.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.visual.FreeLook;
 import net.ccbluex.liquidbounce.features.module.modules.visual.NoRender;
@@ -159,7 +156,7 @@ public abstract class MixinItemRenderer {
             }
             if (itemToRender.getItem() instanceof ItemMap) {
                 this.renderItemMap(abstractclientplayer, f2, f, f1);
-            } else if ((abstractclientplayer.isUsingItem() || ((itemToRender.getItem() instanceof ItemSword) && ((KillAura.INSTANCE.getState() && KillAura.INSTANCE.getDisplayBlocking() && KillAura.INSTANCE.getCurrentTarget() != null) || (SilentAura.INSTANCE.getState() && SilentAura.INSTANCE.getCanBlock() && SilentAura.INSTANCE.getTarget() != null) || (KillAura2.INSTANCE.getState() && KillAura2.INSTANCE.getDisplayBlocking()))))) {
+            } else if (abstractclientplayer.isUsingItem()) {
                 switch (this.itemToRender.getItemUseAction()) {
                     case NONE:
                         this.transformFirstPersonItem(f, 0.0F);

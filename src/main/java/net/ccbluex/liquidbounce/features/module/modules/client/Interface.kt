@@ -54,10 +54,10 @@ object Interface : Module() {
     val performanceMode = BoolValue("Performance-Mode", false)
 
     @JvmStatic
-    fun isBloomActive(): Boolean = bloomValue.get() && !performanceMode.get()
+    fun isBloomActive(): Boolean = bloomValue.get() && !performanceMode.get() && !FPSBoost.isLowEnd()
 
     @JvmStatic
-    fun isBlurActive(): Boolean = blurValue.get() && !performanceMode.get()
+    fun isBlurActive(): Boolean = blurValue.get() && !performanceMode.get() && !FPSBoost.isLowEnd()
 
     val animationSlot = Animation(Easing.EASE_OUT_CIRC, 300)
     var attackTarget: EntityLivingBase? = null

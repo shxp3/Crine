@@ -4,7 +4,6 @@ import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.Render2DEvent
 import net.ccbluex.liquidbounce.features.module.modules.client.Interface
-import net.ccbluex.liquidbounce.features.module.modules.player.Scaffold
 import net.ccbluex.liquidbounce.ui.client.gui.colortheme.ClientTheme
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
@@ -121,7 +120,7 @@ object SlotUtils : Listenable {
         if (animProgress > 0F) {
             if (itemStack != null && itemStack.item is ItemBlock) {
                 val string: String =
-                    "Amount: " + if (Scaffold.state) Scaffold.blockAmount - Scaffold.placeTick else itemStack.stackSize
+                    "Amount: " + itemStack.stackSize
                 val stringWidth = Fonts.SFBold35.getStringWidth(string) + if (itemStack.stackSize < 10) 3F else 0F
                 if (Interface.isBlurActive()) {
                     BlurUtils.blurAreaRounded(

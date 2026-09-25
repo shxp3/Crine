@@ -378,8 +378,8 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             val a = Math.sin(phase * Math.PI).toFloat().coerceAtLeast(0f)
             val dcx = L.panX + L.panW / 2f - 14f + i * 14f
             val dcy = divY + 24f + f.FONT_HEIGHT + 16f
-            RoundedUtil.drawRound(dcx - 3f, dcy - 3f, 6f, 6f, 3f,
-                Color(accent.red, accent.green, accent.blue, (60 + 180 * a).toInt()))
+            RoundedUtil.drawRound(dcx - 2.5f, dcy - 2.5f, 5f, 5f, 1f,
+                Color(accent.red, accent.green, accent.blue, (80 + 150 * a).toInt()))
         }
 
         val bW = 120f; val bH = 22f
@@ -446,11 +446,11 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         GL11.glDisable(GL11.GL_SCISSOR_TEST)
 
         if (maxScroll > 0f) {
-            val sbX = listX + listW - 3f; val sbW = 2.5f
+            val sbX = listX + listW - 3f; val sbW = 2f
             val barH = (viewH * (viewH / totalH)).coerceAtLeast(20f)
             val barY = listY0 + (viewH - barH) * (altScroll / maxScroll)
-            RoundedUtil.drawRound(sbX, listY0, sbW, viewH, 1.2f, Color(255, 255, 255, 12))
-            RoundedUtil.drawRound(sbX, barY, sbW, barH, 1.2f, ThemedUI.withAlpha(accent, 180))
+            RoundedUtil.drawRound(sbX, listY0, sbW, viewH, 1f, Color(28, 32, 44, 255))
+            RoundedUtil.drawRound(sbX, barY, sbW, barH, 1f, ThemedUI.withAlpha(accent, 190))
         }
     }
 

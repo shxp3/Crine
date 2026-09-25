@@ -1,9 +1,6 @@
 
 package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
-import net.ccbluex.liquidbounce.Crine;
-import net.ccbluex.liquidbounce.features.module.modules.visual.Chams;
-import net.ccbluex.liquidbounce.features.module.modules.visual.ItemPhysics;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
@@ -35,25 +32,7 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
     protected abstract int func_177078_a(final ItemStack p0);
 
 
-    @Inject(method = "doRender", at = @At("HEAD"))
-    private void injectChamsPre(CallbackInfo callbackInfo) {
-        final Chams chams = Crine.moduleManager.getModule(Chams.class);
 
-        if (chams.getState() && chams.getItemsValue().get()) {
-            GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-            GL11.glPolygonOffset(1.0F, -1000000F);
-        }
-    }
-
-    @Inject(method = "doRender", at = @At("RETURN"))
-    private void injectChamsPost(CallbackInfo callbackInfo) {
-        final Chams chams = Crine.moduleManager.getModule(Chams.class);
-
-        if (chams.getState() && chams.getItemsValue().get()) {
-            GL11.glPolygonOffset(1.0F, 1000000F);
-            GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-        }
-    }
 
     @Overwrite
     private int func_177077_a(EntityItem itemIn, double x, double y, double z, float p_177077_8_, IBakedModel ibakedmodel) {
@@ -71,7 +50,7 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
 
         float age = (float) itemIn.getAge() + p_177077_8_;
         float hoverStart = itemIn.hoverStart;
-        boolean isPhysicsState = ItemPhysics.INSTANCE.getState();
+        boolean isPhysicsState = false;
         float weight = isPhysicsState ? 0.5F : 0.0f;
 
         float sinValue = (float) (sin((age / 10.0F + hoverStart)) * 0.1F + 0.1F);
@@ -95,7 +74,7 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
         if (isGui3d || this.renderManager.options != null) {
             float rotationYaw = (age / 20.0F + hoverStart) * (180F / (float) Math.PI);
 
-            rotationYaw *= ItemPhysics.INSTANCE.getRotationSpeed().get() * (1.0F + Math.min(age / 360.0F, 1.0F));
+            rotationYaw *= 1.0F;
 
             if (isPhysicsState) {
                 if (itemIn.onGround) {

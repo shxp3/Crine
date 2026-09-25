@@ -1,6 +1,5 @@
 package net.ccbluex.liquidbounce.features.module.modules.visual
 
-import net.ccbluex.liquidbounce.Crine
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.TickEvent
 import net.ccbluex.liquidbounce.features.module.Module
@@ -29,9 +28,8 @@ class Saturation : Module() {
 
     override fun onDisable() {
         instance = null
-        val motionBlurActive = Crine.moduleManager.getModule(MotionBlur::class.java)?.state == true
         VisualShaderManager.onModuleDisabled(
-            motionBlurEnabled = motionBlurActive,
+            motionBlurEnabled = false,
             saturationEnabled = false
         )
     }
@@ -45,8 +43,6 @@ class Saturation : Module() {
 
             // ถ้า MotionBlur active อยู่ ให้ MotionBlur เป็นคนขับ shader แทน
             // เพื่อไม่ให้ทั้งคู่ loadShader() ซ้ำกันใน tick เดียว
-            val motionBlurActive = Crine.moduleManager.getModule(MotionBlur::class.java)?.state == true
-            if (motionBlurActive) return
 
             VisualShaderManager.update(
                 motionBlurEnabled = false,

@@ -16,7 +16,6 @@ class FileManagerCommand : Command("FileManager", emptyArray()) {
                 "load" -> {
                     Crine.fileManager.loadConfig(Crine.fileManager.accountsConfig)
                     Crine.fileManager.loadConfig(Crine.fileManager.friendsConfig)
-                    Crine.fileManager.loadConfig(Crine.fileManager.xrayConfig)
                     Crine.fileManager.loadConfig(Crine.fileManager.themeConfig)
                     Crine.fileManager.loadConfig(Crine.fileManager.clienthudConfig)
                     alert("Successfully loaded config")

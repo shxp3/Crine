@@ -10,7 +10,6 @@ import net.ccbluex.liquidbounce.features.command.CommandManager
 import net.ccbluex.liquidbounce.features.macro.MacroManager
 import net.ccbluex.liquidbounce.features.module.ModuleManager
 import net.ccbluex.liquidbounce.features.module.modules.client.Interface
-import net.ccbluex.liquidbounce.features.module.modules.other.SelfDestructCommand
 import net.ccbluex.liquidbounce.features.special.ClientSpoof
 import net.ccbluex.liquidbounce.features.special.CombatManager
 import net.ccbluex.liquidbounce.features.special.NotificationManager
@@ -35,7 +34,7 @@ object Crine {
     const val COLORED_NAME = "§CC§Frine"
     const val CLIENT_CREATOR = "Shape"
     /** Display + update-check version — keep in sync with crine.github.io/version.json */
-    const val CLIENT_VERSION = "26.0.2"
+    const val CLIENT_VERSION = "1.0"
     var destruced = false
 
     const val CLIENT_LOADING = "Initialzing Minecraft"
@@ -75,7 +74,6 @@ object Crine {
         // Create file manager
         fileManager = FileManager()
         configManager = ConfigManager()
-        ClientCommandHandler.instance.registerCommand(SelfDestructCommand())
         // Create event manager
         eventManager = EventManager()
         // Create event manager
@@ -147,7 +145,7 @@ object Crine {
         Interface.state = true
 
 
-        fileManager.loadConfigs(fileManager.xrayConfig)
+        fileManager.loadConfigs()
 
 
         ClientUtils.logInfo("Loading Script Subscripts...")

@@ -2,7 +2,6 @@ package net.ccbluex.liquidbounce.utils
 
 import net.ccbluex.liquidbounce.Crine
 import net.ccbluex.liquidbounce.event.MoveEvent
-import net.ccbluex.liquidbounce.features.module.modules.movement.Speed
 import net.ccbluex.liquidbounce.features.module.modules.visual.FreeLook
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getBlock
 import net.minecraft.block.Block
@@ -125,7 +124,7 @@ object MovementUtils : MinecraftInstance() {
         strafe(speed)
     }
     fun jump(checkSpeed: Boolean, motion: Boolean = false, motionY: Double = 0.42) {
-        if (!mc.gameSettings.keyBindJump.isKeyDown && (!checkSpeed || !Speed.state)) {
+        if (!mc.gameSettings.keyBindJump.isKeyDown && (!checkSpeed)) {
             if (motion) {
                 mc.thePlayer.motionY = motionY
             } else {

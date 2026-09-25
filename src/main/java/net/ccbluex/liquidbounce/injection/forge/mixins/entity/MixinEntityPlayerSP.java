@@ -3,9 +3,6 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import net.ccbluex.liquidbounce.Crine;
 import net.ccbluex.liquidbounce.event.*;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
-import net.ccbluex.liquidbounce.features.module.modules.movement.*;
-import net.ccbluex.liquidbounce.features.module.modules.player.Scaffold;
 import net.ccbluex.liquidbounce.utils.*;
 import net.ccbluex.liquidbounce.utils.extensions.OtherExtensionKt;
 import net.minecraft.block.Block;
@@ -267,10 +264,6 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
         this.movementInput.updatePlayerMoveState();
 
-        final Sprint sprint = Crine.moduleManager.getModule(Sprint.class);
-        final NoSlow noSlow = Crine.moduleManager.getModule(NoSlow.class);
-        final KillAura killAura = Crine.moduleManager.getModule(KillAura.class);
-        final Inventory inventoryMove = Crine.moduleManager.getModule(Inventory.class);
 
         if (this.sprintingTicksLeft > 0) {
             --this.sprintingTicksLeft;
@@ -286,26 +279,22 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
         boolean moving = Math.abs(this.movementInput.moveForward) > 0.05F || Math.abs(this.movementInput.moveStrafe) > 0.05F;
         boolean forwardEnough = this.movementInput.moveForward >= 0.8F;
-        boolean omniDir = sprint.getState() && sprint.getAllDirectionsValue().get() && moving;
-        boolean isSprintDirection = moving && (forwardEnough || omniDir);
+        boolean isSprintDirection = moving && forwardEnough;
 
         boolean isCurrentUsingItem = getHeldItem() != null
-                && (this.isUsingItem() || (getHeldItem().getItem() instanceof ItemSword && killAura.getBlockingStatus()))
+                && this.isUsingItem()
                 && !this.isRiding();
-
-        boolean hungerOk = (!sprint.getHungryValue().get() && sprint.getState())
-                || (float) this.getFoodStats().getFoodLevel() > 6.0F
+        boolean hungerOk = (float) this.getFoodStats().getFoodLevel() > 6.0F
                 || this.capabilities.allowFlying;
 
         boolean baseSprintState = isSprintDirection
                 && hungerOk
-                && (!this.isCollidedHorizontally || sprint.getCollideValue().get())
-                && (!this.isSneaking() || sprint.getSneakValue().get())
+                && !this.isCollidedHorizontally
+                && !this.isSneaking()
                 && !this.isPotionActive(Potion.blindness)
-                && (!isCurrentUsingItem || (noSlow.getState() && noSlow.getShouldSprint()))
-                && (!inventoryMove.getNoSprintValue().equals("Real") || !inventoryMove.getInvOpen());
+                && !isCurrentUsingItem;
 
-        boolean attemptToggle = sprint.getState() || this.isSprinting() || this.mc.gameSettings.keyBindSprint.isKeyDown();
+        boolean attemptToggle = this.isSprinting() || this.mc.gameSettings.keyBindSprint.isKeyDown();
         boolean canToggleSprint = this.onGround && !this.movementInput.jump && !this.movementInput.sneak && !this.isPotionActive(Potion.blindness);
 
         final SprintEvent sprintEvent = new SprintEvent(baseSprintState && attemptToggle);
@@ -331,7 +320,6 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
         float moveForward = RotationUtils.targetRotation != null ? Math.round(modifiedInput.moveForward * MathHelper.cos(OtherExtensionKt.toRadians(rotationYaw - RotationUtils.targetRotation.getYaw())) + modifiedInput.moveStrafe * MathHelper.sin(OtherExtensionKt.toRadians(rotationYaw - RotationUtils.targetRotation.getYaw()))) : modifiedInput.moveForward;
         Crine.eventManager.callEvent(new UpdateEvent());
 
-        sprint.check(moveForward);
 
 
         //Update Portal Effects state (Vanilla)
@@ -374,9 +362,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
         this.movementInput.updatePlayerMoveState();
 
         isCurrentUsingItem = getHeldItem() != null
-                && (this.isUsingItem() || (getHeldItem().getItem() instanceof ItemSword && killAura.getBlockingStatus()))
+                && this.isUsingItem()
                 && !this.isRiding();
-
         if (isCurrentUsingItem) {
             final SlowDownEvent slowDownEvent = new SlowDownEvent(0.2F, 0.2F);
             Crine.eventManager.callEvent(slowDownEvent);

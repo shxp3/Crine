@@ -34,7 +34,7 @@ public class FullBright extends Module {
 
     @EventTarget(ignoreCondition = true)
     public void onUpdate(final UpdateEvent event) {
-        if (getState() || Crine.moduleManager.getModule(XRay.class).getState()) {
+        if (getState()) {
             switch(modeValue.get().toLowerCase()) {
                 case "gamma":
                     if(mc.gameSettings.gammaSetting <= 100F)

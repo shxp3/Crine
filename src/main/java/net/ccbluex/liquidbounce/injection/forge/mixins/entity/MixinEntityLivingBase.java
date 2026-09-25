@@ -3,8 +3,6 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import net.ccbluex.liquidbounce.Crine;
 import net.ccbluex.liquidbounce.event.JumpEvent;
-import net.ccbluex.liquidbounce.features.module.modules.movement.Jesus;
-import net.ccbluex.liquidbounce.features.module.modules.movement.MovementCorrection;
 import net.ccbluex.liquidbounce.features.module.modules.other.ViaVersionFix;
 import net.ccbluex.liquidbounce.features.module.modules.visual.Animations;
 import net.ccbluex.liquidbounce.ui.client.gui.colortheme.ClientTheme;
@@ -153,12 +151,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
                 // rotation is actually active. Without one, the real yaw
                 // IS what gets sent to the server, so using it matches
                 // what prediction-based AC (Hypixel / Grim) will simulate.
-                float yaw;
-                if (MovementCorrection.INSTANCE.getDoFix() && RotationUtils.targetRotation != null) {
-                    yaw = RotationUtils.targetRotation.getYaw();
-                } else {
-                    yaw = event.getYaw();
-                }
+                float yaw = event.getYaw();
                 float f = yaw * 0.017453292F;
                 this.motionX -= (MathHelper.sin(f) * 0.2F);
                 this.motionZ += (MathHelper.cos(f) * 0.2F);
@@ -179,15 +172,6 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
             float f = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * p_getLook_1_;
             float f1 = this.prevRotationYawHead + (this.rotationYawHead - this.prevRotationYawHead) * p_getLook_1_;
             return this.getVectorForRotation(f, f1);
-        }
-    }
-    @Inject(method = "onLivingUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;isJumping:Z", ordinal = 1))
-    private void onJumpSection(CallbackInfo callbackInfo) {
-        final Jesus jesus = Crine.moduleManager.getModule(Jesus.class);
-
-        if (jesus.getState() && !isJumping && !isSneaking() && isInWater() &&
-                jesus.getModeValue().equals("Legit")) {
-            this.updateAITick();
         }
     }
 

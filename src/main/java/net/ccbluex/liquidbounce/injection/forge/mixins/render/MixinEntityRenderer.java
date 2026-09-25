@@ -4,8 +4,6 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 import com.google.common.base.Predicates;
 import net.ccbluex.liquidbounce.Crine;
 import net.ccbluex.liquidbounce.event.Render3DEvent;
-import net.ccbluex.liquidbounce.features.module.modules.combat.SilentAura;
-import net.ccbluex.liquidbounce.features.module.modules.combat.Reach;
 import net.ccbluex.liquidbounce.features.module.modules.visual.*;
 import net.ccbluex.liquidbounce.utils.Rotation;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
@@ -215,15 +213,7 @@ public abstract class MixinEntityRenderer {
         d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)p_orientCamera_1_;
         this.cloudFog = this.mc.renderGlobal.hasCloudFog(d0, d1, d2, p_orientCamera_1_);
     }
-    @Inject(method = "setupCameraTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;setupViewBobbing(F)V", shift = At.Shift.BEFORE))
-    private void setupCameraViewBobbingBefore(final CallbackInfo callbackInfo) {
-        if (Crine.moduleManager.getModule(Tracers.class).getState()) GL11.glPushMatrix();
-    }
 
-    @Inject(method = "setupCameraTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;setupViewBobbing(F)V", shift = At.Shift.AFTER))
-    private void setupCameraViewBobbingAfter(final CallbackInfo callbackInfo) {
-        if (Crine.moduleManager.getModule(Tracers.class).getState()) GL11.glPopMatrix();
-    }
 
     /**
      * @author Liuli
@@ -305,7 +295,7 @@ public abstract class MixinEntityRenderer {
                 }
             }
 
-            if (pointedEntity != null && flag && vec3.distanceTo(vec33) > (SilentAura.INSTANCE.getState() ? SilentAura.INSTANCE.getReach() : Reach.INSTANCE.getState() ? Reach.INSTANCE.getReach() : 3)) {
+            if (pointedEntity != null && flag && vec3.distanceTo(vec33) > 3D) {
                 pointedEntity = null;
                 mc.objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, Objects.requireNonNull(vec33), null, new BlockPos(vec33));
             }

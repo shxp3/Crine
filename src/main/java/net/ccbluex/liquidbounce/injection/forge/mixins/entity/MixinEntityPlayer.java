@@ -2,8 +2,6 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import com.mojang.authlib.GameProfile;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KeepSprint;
-import net.ccbluex.liquidbounce.features.module.modules.player.Scaffold;
 import net.ccbluex.liquidbounce.features.module.modules.visual.Animations;
 import net.ccbluex.liquidbounce.utils.CooldownHelper;
 import net.minecraft.client.Minecraft;
@@ -86,33 +84,9 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
         }
     }
 
-    @ModifyConstant(method = "attackTargetEntityWithCurrentItem", constant = @Constant(doubleValue = 0.6))
-    private double injectKeepSprintA(double constant) {
-        return KeepSprint.INSTANCE.getState() && KeepSprint.INSTANCE.getMotion() != null ? KeepSprint.INSTANCE.getMotion() : constant;
-    }
-
-    @Redirect(method = "attackTargetEntityWithCurrentItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;setSprinting(Z)V"))
-    private void injectKeepSprintB(EntityPlayer instance, boolean sprint) {
-        if (!KeepSprint.INSTANCE.getState()) {
-            instance.setSprinting(sprint);
-        }
-    }
 
     @Inject(method = "getEyeHeight", at = @At("HEAD"), cancellable = true)
     private void modifyEyeHeight(CallbackInfoReturnable<Float> cir) {
-        final Scaffold scaffold = Scaffold.INSTANCE;
-        if (scaffold.getState() && scaffold.getEagleValue().equals("Silent") && scaffold.getY() != null) {
-            float f2;
-            final double y = scaffold.getY();
-            f2 = (float) (1.62F - (mc.thePlayer.lastTickPosY + (((mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * mc.timer.renderPartialTicks)) - y));
-            cir.setReturnValue(f2);
-        }
-        if (scaffold.getState() && scaffold.getSprintModeValue().equals("WatchDog") && !scaffold.getTowerStatus() && scaffold.getLastGroundY() != null) {
-            float f2;
-            final double y = scaffold.getLastGroundY();
-            f2 = (float) (1.62F - (mc.thePlayer.lastTickPosY + (((mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * mc.timer.renderPartialTicks)) - y));
-            cir.setReturnValue(f2);
-        }
         if (Animations.INSTANCE.getOldSneak().get() && Animations.INSTANCE.getState()) {
             final int delay = 1000 / 100;
             if (isSneaking()) {

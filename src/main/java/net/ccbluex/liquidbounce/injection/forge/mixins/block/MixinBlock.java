@@ -3,19 +3,11 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.block;
 
 import net.ccbluex.liquidbounce.Crine;
 import net.ccbluex.liquidbounce.event.BlockBBEvent;
-import net.ccbluex.liquidbounce.features.module.modules.combat.Criticals;
-import net.ccbluex.liquidbounce.features.module.modules.combat.Reach;
-import net.ccbluex.liquidbounce.features.module.modules.player.NoFall;
-import net.ccbluex.liquidbounce.features.module.modules.visual.XRay;
-import net.ccbluex.liquidbounce.features.module.modules.world.NoSlowBreak;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -62,50 +54,8 @@ public abstract class MixinBlock {
         if(axisalignedbb != null && mask.intersectsWith(axisalignedbb))
             list.add(axisalignedbb);
     }
-
-    @Inject(method = "shouldSideBeRendered", at = @At("HEAD"), cancellable = true)
-    private void shouldSideBeRendered(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        final XRay xray = Crine.moduleManager.getModule(XRay.class);
-
-        if(xray.getState())
-            callbackInfoReturnable.setReturnValue(xray.getXrayBlocks().contains(this));
-    }
-
-    @Inject(method = "getAmbientOcclusionLightValue", at = @At("HEAD"), cancellable = true)
-    private void getAmbientOcclusionLightValue(final CallbackInfoReturnable<Float> floatCallbackInfoReturnable) {
-        if (Crine.moduleManager.getModule(XRay.class).getState())
-            floatCallbackInfoReturnable.setReturnValue(1F);
-    }
-
-    @Inject(method = "getPlayerRelativeBlockHardness", at = @At("RETURN"), cancellable = true)
-    public void modifyBreakSpeed(EntityPlayer playerIn, World worldIn, BlockPos pos, final CallbackInfoReturnable<Float> callbackInfo) {
-        float f = callbackInfo.getReturnValue();
-
-        // NoSlowBreak
-        final NoSlowBreak noSlowBreak = Crine.moduleManager.getModule(NoSlowBreak.class);
-        if (noSlowBreak.getState()) {
-            if (noSlowBreak.getWaterValue().get() && playerIn.isInsideOfMaterial(Material.water) &&
-                    !EnchantmentHelper.getAquaAffinityModifier(playerIn)) {
-                f *= 5.0F;
-            }
-
-            if (noSlowBreak.getAirValue().get() && !playerIn.onGround) {
-                f *= 5.0F;
-            }
-        } else if (playerIn.onGround) { // NoGround
-            final NoFall noFall = Crine.moduleManager.getModule(NoFall.class);
-            final Criticals criticals = Crine.moduleManager.getModule(Criticals.class);
-
-            if (noFall.getState() && noFall.getMode().equals("NoGround") ||
-                    criticals.getState() && criticals.getModeValue().equals("NoGround")) {
-                f /= 5F;
-            }
-        }
-
-        callbackInfo.setReturnValue(f);
-    }
     @Overwrite
     public boolean isCollidable() {
-        return !Reach.INSTANCE.getState() || (!Reach.INSTANCE.getThroughWall().get() || !Reach.INSTANCE.call());
+        return true;
     }
 }
