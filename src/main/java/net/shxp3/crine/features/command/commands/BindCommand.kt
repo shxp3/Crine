@@ -1,0 +1,53 @@
+ 
+package net.shxp3.crine.features.command.commands
+
+import net.shxp3.crine.Crine
+import net.shxp3.crine.features.command.Command
+import org.lwjgl.input.Keyboard
+
+class BindCommand : Command("bind", emptyArray()) {
+    /**
+     * Execute commands with provided [args]
+     */
+    override fun execute(args: Array<String>) {
+        if (args.size > 1) {
+            // Get module by name
+            val module = Crine.moduleManager.getModule(args[1])
+
+            if (module == null) {
+                alert("Module §l" + args[1] + "§r not found.")
+                return
+            }
+
+            if (args.size > 2) {
+                // Find key by name and change
+                val key = Keyboard.getKeyIndex(args[2].uppercase())
+                module.keyBind = key
+
+                // Response to user
+                alert("Bound module §l${module.name}§r to key §a§l${Keyboard.getKeyName(key)}§3.")
+                playEdit()
+            } else {
+                Crine.moduleManager.pendingBindModule = module
+                alert("Press any key to bind module ${module.name}")
+            }
+            return
+        }
+
+        chatSyntax(arrayOf("<module> <key>", "<module> none"))
+    }
+
+    override fun tabComplete(args: Array<String>): List<String> {
+        if (args.isEmpty()) return emptyList()
+
+        val moduleName = args[0]
+
+        return when (args.size) {
+            1 -> Crine.moduleManager.modules
+                    .map { it.name }
+                    .filter { it.startsWith(moduleName, true) }
+                    .toList()
+            else -> emptyList()
+        }
+    }
+}

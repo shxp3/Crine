@@ -1,0 +1,13 @@
+package net.shxp3.crine.features.value
+
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+
+/**
+ * Text value represents a value with a string
+ */
+open class TitleValue(title: String) : Value<String>(title, "") {
+    override fun toJson() = JsonPrimitive(value)
+
+    override fun fromJson(element: JsonElement) {}
+}

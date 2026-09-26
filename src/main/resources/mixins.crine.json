@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.7.11",
-  "package": "net.ccbluex.liquidbounce.injection.forge.mixins",
+  "package": "net.shxp3.crine.injection.forge.mixins",
   "refmap": "mixins.crine.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [

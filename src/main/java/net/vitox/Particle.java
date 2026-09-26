@@ -1,7 +1,7 @@
 package net.vitox;
 
-import net.ccbluex.liquidbounce.injection.access.StaticStorage;
-import net.ccbluex.liquidbounce.utils.render.RenderUtils;
+import net.shxp3.crine.injection.access.StaticStorage;
+import net.shxp3.crine.utils.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 

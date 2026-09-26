@@ -1,0 +1,43 @@
+package net.shxp3.crine.features.module.modules.visual
+
+import net.shxp3.crine.event.EventTarget
+import net.shxp3.crine.event.PacketEvent
+import net.shxp3.crine.event.UpdateEvent
+import net.shxp3.crine.features.module.Module
+import net.shxp3.crine.features.module.ModuleCategory
+import net.shxp3.crine.features.module.ModuleInfo
+import net.shxp3.crine.features.value.BoolValue
+import net.shxp3.crine.features.value.IntegerValue
+import net.minecraft.network.play.server.S03PacketTimeUpdate
+import org.lwjgl.input.Keyboard
+
+@ModuleInfo(name = "WorldTime", category = ModuleCategory.VISUAL)
+class WorldTime : Module() {
+    private val customWorldTimeValue = IntegerValue("Custom-Time", 1, 0, 20000)
+    private val arrowValue = BoolValue("Arrow-Button", false)
+    private var c = false
+    private var a = false
+    @EventTarget
+    fun onUpdate(event: UpdateEvent) {
+        mc.theWorld.worldTime = customWorldTimeValue.get().toLong()
+
+        if (arrowValue.get()) {
+            if (!c && Keyboard.isKeyDown(203) && customWorldTimeValue.value != 0) {
+                customWorldTimeValue.set(customWorldTimeValue.value - 1000)
+            }
+            if (!a && Keyboard.isKeyDown(205) && customWorldTimeValue.value != 20) {
+                customWorldTimeValue.set(customWorldTimeValue.value + 1000)
+            }
+            c = Keyboard.isKeyDown(203)
+            a = Keyboard.isKeyDown(205)
+        }
+    }
+
+    @EventTarget
+    fun onPacket(event: PacketEvent) {
+        val packet = event.packet
+        if (packet is S03PacketTimeUpdate) {
+            event.cancelEvent()
+        }
+    }
+}

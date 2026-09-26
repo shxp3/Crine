@@ -1,0 +1,151 @@
+package net.shxp3.crine.features.module
+
+import net.shxp3.crine.Crine
+import net.shxp3.crine.event.EventTarget
+import net.shxp3.crine.event.KeyEvent
+import net.shxp3.crine.event.Listenable
+import net.shxp3.crine.event.UpdateEvent
+import net.shxp3.crine.features.special.AutoDisable
+import net.shxp3.crine.utils.ClassUtils
+import net.shxp3.crine.utils.ClientUtils
+import net.shxp3.crine.utils.KeybindHelper
+import net.minecraft.client.Minecraft
+import org.lwjgl.input.Keyboard
+import org.lwjgl.input.Mouse
+
+class ModuleManager : Listenable {
+
+    val modules = mutableListOf<Module>()
+    private val moduleClassMap = hashMapOf<Class<*>, Module>()
+    fun getModuleInCategory(category: ModuleCategory) = modules.filter { it.category == category }
+    var pendingBindModule: Module? = null
+
+    init {
+        Crine.eventManager.registerListener(this)
+    }
+
+    /**
+     * Register all modules
+     */
+    fun registerModules() {
+        ClientUtils.logInfo("[ModuleManager] Loading modules...")
+
+        ClassUtils.resolvePackage("${this.javaClass.`package`.name}.modules", Module::class.java)
+            .forEach(this::registerModule)
+
+        modules.forEach { it.onInitialize() }
+
+        modules.forEach { it.onLoad() }
+
+        Crine.eventManager.registerListener(AutoDisable)
+
+        ClientUtils.logInfo("[ModuleManager] Loaded ${modules.size} modules.")
+    }
+
+    /**
+     * Register [module]
+     */
+    fun registerModule(module: Module) {
+        modules += module
+        moduleClassMap[module.javaClass] = module
+        modules.sortBy { it.name }
+
+        generateCommand(module)
+
+        Crine.eventManager.registerListener(module)
+    }
+
+    /**
+     * Register [moduleClass]
+     */
+    private fun registerModule(moduleClass: Class<out Module>) {
+        try {
+            registerModule(moduleClass.newInstance())
+        } catch (e: IllegalAccessException) {
+            // this module is a kotlin object
+            registerModule(ClassUtils.getObjectInstance(moduleClass) as Module)
+        } catch (e: Throwable) {
+            ClientUtils.logError("Failed to load module: ${moduleClass.name} (${e.javaClass.name}: ${e.message})")
+        }
+    }
+
+    /**
+     * Unregister module
+     */
+    fun unregisterModule(module: Module) {
+        modules.remove(module)
+        moduleClassMap.remove(module::class.java)
+        Crine.eventManager.unregisterListener(module)
+    }
+
+    /**
+     * Generate command for [module]
+     */
+    internal fun generateCommand(module: Module) {
+        if (!module.moduleCommand) {
+            return
+        }
+
+        val values = module.values
+
+        if (values.isEmpty()) {
+            return
+        }
+
+        Crine.commandManager.registerCommand(ModuleCommand(module, values))
+    }
+
+    fun getModulesByName(name: String): List<Module> {
+        return this.modules.filter { it.name.lowercase().contains(name.lowercase()) }
+    }
+
+    /**
+     * Get module by [moduleClass]
+     */
+    fun <T : Module> getModule(moduleClass: Class<T>): T? {
+        return moduleClassMap[moduleClass] as T?
+    }
+
+    operator fun <T : Module> get(clazz: Class<T>) = getModule(clazz)
+
+    /**
+     * Get module by [moduleName]
+     */
+    fun getModule(moduleName: String?) = modules.find { it.name.equals(moduleName, ignoreCase = true) }
+
+    fun getKeyBind(key: Int) = modules.filter { it.keyBind == key }
+
+    /**
+     * Module related events
+     */
+
+    /**
+     * Handle incoming key presses
+     */
+    @EventTarget
+    private fun onKey(event: KeyEvent) {
+        if (pendingBindModule == null) {
+            modules.toMutableList().filter { it.triggerType == EnumTriggerType.TOGGLE && it.keyBind == event.key }.forEach { it.toggle() }
+        } else {
+            pendingBindModule!!.keyBind = event.key
+            ClientUtils.displayAlert("Bound module §a§l${pendingBindModule!!.name}§3 to key §a§l${KeybindHelper.getDisplayName(event.key)}§3.")
+            pendingBindModule = null
+        }
+    }
+
+    @EventTarget
+    private fun onUpdate(event: UpdateEvent) {
+        if (pendingBindModule != null || Minecraft.getMinecraft().currentScreen != null) {
+            return
+        }
+        for (module in modules) {
+            if (module.triggerType != EnumTriggerType.PRESS) continue
+            module.state = if (KeybindHelper.isMouseBind(module.keyBind))
+                try { Mouse.isButtonDown(module.keyBind + 100) } catch (_: Throwable) { false }
+            else
+                Keyboard.isKeyDown(module.keyBind)
+        }
+    }
+
+    override fun handleEvents() = true
+}
