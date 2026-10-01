@@ -1,24 +1,181 @@
 <div align="center">
-<h1>Crine Client</h1>
-<h3>A free mixin-based injection hacked-client for Minecraft using Minecraft Forge based on LiquidBounce.</h3>
-Website: <a href="https://crine.github.io">crine.github.io</a><br>
-Discord: <a href="https://dsc.gg/crinecommunity">Crine Community</a><br>
+
+# Crine Client
+
+### A lightweight Minecraft Forge client focused on performance, optimization, customization, and quality-of-life improvements.
+
+**Website:** [crine.github.io](https://crine.github.io)  
+**Discord:** [Crine Community](https://dsc.gg/crinecommunity)
+
 </div>
 
+---
+
+## About Crine
+
+**Crine Client** is a Minecraft Forge-based client designed to provide a smoother and more customizable Minecraft experience.
+
+The project focuses primarily on:
+
+- FPS optimization and reduced frame-time spikes
+- Memory and resource usage improvements
+- Rendering optimizations
+- Faster and cleaner user interface
+- Quality-of-life features
+- HUD customization
+- Client-side utilities
+- Improved responsiveness
+- Modular Forge integration
+
+Crine is designed as a **legit client** and does not focus on providing unfair gameplay advantages.
+
+The goal of the project is to feel closer to a modern **modded Minecraft Forge client** rather than a traditional hacked-client framework.
+
+---
+
+## Performance
+
+Crine includes and experiments with optimizations across different areas of the Minecraft client, including:
+
+- Entity rendering
+- Particle rendering
+- World rendering
+- GUI rendering
+- Texture and resource handling
+- Memory allocation
+- Garbage collection pressure
+- Event processing
+- Client tick processing
+
+Optimization features can be independently configured depending on the user's system and preferences.
+
+---
+
+## Features
+
+Crine's features are organized into several categories:
+
+### Performance
+
+Features intended to improve FPS, frame consistency, loading times, and resource usage.
+
+### Visual
+
+Client-side visual customization without modifying gameplay mechanics.
+
+### Interface
+
+HUD elements, menus, overlays, notifications, and other interface improvements.
+
+### Utility
+
+Small client-side quality-of-life features intended to improve the overall Minecraft experience.
+
+### Integration
+
+Features that improve compatibility or integration with Minecraft Forge and other supported mods.
+
+---
+
+## Project Structure
+
+Crine uses its own client architecture designed around Minecraft Forge rather than the traditional hacked-client module structure.
+
+```text
+src/main/java/
+└── crine/
+    ├── Crine.java
+    │
+    ├── client/
+    │   ├── CrineClient.java
+    │   ├── ClientBootstrap.java
+    │   └── ClientLifecycle.java
+    │
+    ├── config/
+    │   ├── ClientConfig.java
+    │   ├── ConfigManager.java
+    │   └── Setting.java
+    │
+    ├── event/
+    │   ├── EventBus.java
+    │   ├── EventListener.java
+    │   └── events/
+    │
+    ├── feature/
+    │   ├── Feature.java
+    │   ├── FeatureRegistry.java
+    │   ├── FeatureCategory.java
+    │   │
+    │   ├── performance/
+    │   ├── visual/
+    │   ├── interface/
+    │   ├── utility/
+    │   └── integration/
+    │
+    ├── optimization/
+    │   ├── render/
+    │   ├── memory/
+    │   ├── world/
+    │   ├── entity/
+    │   └── resource/
+    │
+    ├── ui/
+    │   ├── screen/
+    │   ├── hud/
+    │   ├── component/
+    │   └── notification/
+    │
+    ├── mixin/
+    │
+    ├── forge/
+    │   ├── ForgeEventHandler.java
+    │   └── ForgeIntegration.java
+    │
+    ├── compatibility/
+    │
+    └── util/
+        ├── render/
+        ├── math/
+        ├── minecraft/
+        └── system/
+```
+
+This architecture separates Crine's optimization systems, Forge integration, interface, configuration, and client features from each other to make the project easier to maintain and extend.
+
+---
+
+## Development
+
+Crine is currently being rebuilt and refactored with a stronger focus on performance and maintainability.
+
+Some parts of the project may originate from or have been inspired by previous open-source projects. These components are gradually being rewritten or reorganized into Crine's own architecture while respecting their respective licenses.
+
+---
 
 ## License
-This project is subject to the [GNU General Public License v3.0](LICENSE). This does only apply for source code located directly in this clean repository. During the development and compilation process, additional source code may be used to which we have obtained no rights. Such code is not covered by the GPL license.
 
-For those who are unfamiliar with the license, here is a summary of its main points. This is by no means legal advise nor legally binding.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 
 You are allowed to:
-- use
-- share
-- modify
 
-this project entirely or partially for free and even commercially. However, please consider the following:
+- Use
+- Study
+- Modify
+- Share
+- Distribute
 
-- **You must disclose the source code of your modified work and the source code you took from this project. This means you are not allowed to use code from this project (even partially) in a closed-source (or even obfuscated) application.**
-- **Your modified application must also be licensed under the GPL.**
+the source code, including for commercial purposes, subject to the terms of the GPL.
 
-Do the above and share your source code with everyone; just like we do!
+If you distribute a modified version that contains GPL-licensed Crine code, you must comply with the GPL requirements, including making the corresponding source code available under the same compatible license terms.
+
+See the [LICENSE](LICENSE) file for the complete license text.
+
+---
+
+<div align="center">
+
+**Crine Client**
+
+Performance. Customization. Simplicity.
+
+</div>
