@@ -62,9 +62,11 @@ class GameFontRenderer @JvmOverloads constructor(font: Font, stopChar: Int = 255
 
         var currentText = text
 
-        val event = TextEvent(currentText)
-        Crine.eventManager.callEvent(event)
-        currentText = event.text ?: return 0
+        if (Crine.eventManager.hasActiveHandlers(TextEvent::class.java)) {
+            val event = TextEvent(currentText)
+            Crine.eventManager.callEvent(event)
+            currentText = event.text ?: return 0
+        }
 
         val currY = y - 3F
         if (shadow)
@@ -194,9 +196,11 @@ class GameFontRenderer @JvmOverloads constructor(font: Font, stopChar: Int = 255
         var currentText = text
 
 
-        val event = TextEvent(currentText)
-        Crine.eventManager.callEvent(event)
-        currentText = event.text ?: return 0
+        if (Crine.eventManager.hasActiveHandlers(TextEvent::class.java)) {
+            val event = TextEvent(currentText)
+            Crine.eventManager.callEvent(event)
+            currentText = event.text ?: return 0
+        }
 
         return if (currentText.contains("§")) {
             val parts = currentText.split("§")

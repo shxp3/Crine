@@ -53,6 +53,13 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
 
     private data class StringTexture(val texId: Int, val w: Int, val h: Int, var lastUsed: Long)
     private val thaiCache = HashMap<String, StringTexture>()
+    // Font is immutable; measuring Thai HUD text need not allocate an image each frame.
+    private val widthMetrics = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics().let {
+        it.font = font
+        val metrics = it.fontMetrics
+        it.dispose()
+        metrics
+    }
 
     private var textureID = 0
     private var textureWidth = 0
@@ -152,7 +159,7 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
 
         GL11.glBegin(GL11.GL_QUADS)
 
-        for (char in text.toCharArray()) {
+        for (char in text) {
             if (char.toInt() >= charLocations.size) {
                 GL11.glEnd()
 
@@ -301,11 +308,7 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
      */
     fun getStringWidth(text: String): Int {
         if (hasThai(text)) {
-            val tmp = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).graphics as Graphics2D
-            tmp.font = font
-            val w = tmp.fontMetrics.stringWidth(text)
-            tmp.dispose()
-            return w / 2
+            return widthMetrics.stringWidth(text) / 2
         }
 
         var width = 0

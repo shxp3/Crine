@@ -2,6 +2,7 @@
 package net.shxp3.crine.injection.forge.mixins.render;
 
 import com.google.common.base.Predicates;
+import com.google.common.base.Predicate;
 import net.shxp3.crine.Crine;
 import net.shxp3.crine.event.Render3DEvent;
 import net.shxp3.crine.features.module.modules.visual.*;
@@ -37,12 +38,12 @@ import org.lwjgl.util.glu.Project;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,6 +52,9 @@ import static org.objectweb.asm.Opcodes.GETFIELD;
 
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer {
+    @Unique
+    private static final Predicate<Entity> crine$pickableEntities = Predicates.and(
+            EntitySelectors.NOT_SPECTATING, candidate -> candidate != null && candidate.canBeCollidedWith());
 
     protected MixinEntityRenderer(int[] lightmapColors, DynamicTexture lightmapTexture, float torchFlickerX, float bossColorModifier, float bossColorModifierPrev, Minecraft mc, float thirdPersonDistanceTemp, float thirdPersonDistance) {
         this.lightmapColors = lightmapColors;
@@ -260,36 +264,35 @@ public abstract class MixinEntityRenderer {
 
             pointedEntity = null;
             Vec3 vec33 = null;
-            List<Entity> list = mc.theWorld.getEntities(Entity.class, Predicates.and(EntitySelectors.NOT_SPECTATING, p_apply_1_ -> p_apply_1_ != null && p_apply_1_.canBeCollidedWith() && p_apply_1_ != entity));
+            // Query nearby chunks along the ray instead of every loaded entity each frame.
+            List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity,
+                    entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0)
+                            .expand(1.0D, 1.0D, 1.0D), crine$pickableEntities);
             double d2 = d1;
 
             for (Entity entity1 : list) {
                 float f1 = entity1.getCollisionBorderSize();
 
-                final ArrayList<AxisAlignedBB> boxes = new ArrayList<>();
-                boxes.add(entity1.getEntityBoundingBox().expand(f1, f1, f1));
-
-                for (final AxisAlignedBB axisalignedbb : boxes) {
-                    MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
-                    if (axisalignedbb.isVecInside(vec3)) {
-                        if (d2 >= 0) {
-                            pointedEntity = entity1;
-                            vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
-                            d2 = 0;
-                        }
-                    } else if (movingobjectposition != null) {
-                        double d3 = vec3.distanceTo(movingobjectposition.hitVec);
-                        if (d3 < d2 || d2 == 0) {
-                            if (entity1 == entity.ridingEntity && !entity.canRiderInteract()) {
-                                if (d2 == 0) {
-                                    pointedEntity = entity1;
-                                    vec33 = movingobjectposition.hitVec;
-                                }
-                            } else {
+                final AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, f1, f1);
+                MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+                if (axisalignedbb.isVecInside(vec3)) {
+                    if (d2 >= 0) {
+                        pointedEntity = entity1;
+                        vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
+                        d2 = 0;
+                    }
+                } else if (movingobjectposition != null) {
+                    double d3 = vec3.distanceTo(movingobjectposition.hitVec);
+                    if (d3 < d2 || d2 == 0) {
+                        if (entity1 == entity.ridingEntity && !entity.canRiderInteract()) {
+                            if (d2 == 0) {
                                 pointedEntity = entity1;
                                 vec33 = movingobjectposition.hitVec;
-                                d2 = d3;
                             }
+                        } else {
+                            pointedEntity = entity1;
+                            vec33 = movingobjectposition.hitVec;
+                            d2 = d3;
                         }
                     }
                 }

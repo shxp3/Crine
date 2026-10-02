@@ -7,16 +7,20 @@ import net.shxp3.crine.features.module.ModuleCategory
 import net.shxp3.crine.features.module.ModuleInfo
 import net.shxp3.crine.features.value.BoolValue
 import net.shxp3.crine.features.value.IntegerValue
+import net.minecraft.client.settings.GameSettings
+import org.lwjgl.opengl.Display
 
 @ModuleInfo(name = "FPSBoost", category = ModuleCategory.CLIENT, defaultOn = true, array = false)
 object FPSBoost : Module() {
     val lowEndMode = BoolValue("LowEnd-Mode", true)
     val fastGraphics = BoolValue("Fast-Graphics", true).displayable { lowEndMode.get() }
+    val useVbo = BoolValue("Use-VBO", true).displayable { lowEndMode.get() }
     val lowRenderDistance = BoolValue("Low-Render-Distance", true).displayable { lowEndMode.get() }
     val renderDistance = IntegerValue("Render-Distance", 4, 2, 8).displayable { lowEndMode.get() && lowRenderDistance.get() }
     val minimalParticles = BoolValue("Minimal-Particles", true).displayable { lowEndMode.get() }
     val disableClouds = BoolValue("No-Clouds", true).displayable { lowEndMode.get() }
     val noVsync = BoolValue("No-VSync", true).displayable { lowEndMode.get() }
+    val unlimitedFps = BoolValue("Unlimited-FPS", true).displayable { lowEndMode.get() }
     val noEntityShadow = BoolValue("No-Entity-Shadow", true).displayable { lowEndMode.get() }
     val lowSmoothLighting = BoolValue("Low-Smooth-Lighting", true).displayable { lowEndMode.get() }
 
@@ -31,12 +35,19 @@ object FPSBoost : Module() {
         if (mc.thePlayer.ticksExisted % 20 != 0) return
 
         val gs = mc.gameSettings
-        if (fastGraphics.get()) {
+        var reloadRenderers = false
+        if (fastGraphics.get() && gs.fancyGraphics) {
             gs.fancyGraphics = false
+            reloadRenderers = true
+        }
+        if (useVbo.get() && !gs.useVbo) {
+            gs.useVbo = true
+            reloadRenderers = true
         }
         if (lowRenderDistance.get()) {
             if (gs.renderDistanceChunks != renderDistance.get()) {
                 gs.renderDistanceChunks = renderDistance.get()
+                reloadRenderers = true
             }
         }
         if (minimalParticles.get() && gs.particleSetting != 2) {
@@ -47,12 +58,22 @@ object FPSBoost : Module() {
         }
         if (noVsync.get() && gs.enableVsync) {
             gs.enableVsync = false
+            // The field alone does not change the window's swap interval.
+            Display.setVSyncEnabled(false)
+        }
+        if (unlimitedFps.get()) {
+            // Use the option's maximum so OptiFine can supply its own range.
+            gs.limitFramerate = GameSettings.Options.FRAMERATE_LIMIT.valueMax.toInt()
         }
         if (noEntityShadow.get() && gs.entityShadows) {
             gs.entityShadows = false
         }
-        if (lowSmoothLighting.get() && gs.ambientOcclusion != 1) {
+        if (lowSmoothLighting.get() && gs.ambientOcclusion > 1) {
             gs.ambientOcclusion = 1
+            reloadRenderers = true
+        }
+        if (reloadRenderers) {
+            mc.renderGlobal.loadRenderers()
         }
     }
 }

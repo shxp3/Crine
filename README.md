@@ -49,6 +49,33 @@ Crine includes and experiments with optimizations across different areas of the 
 
 Optimization features can be independently configured depending on the user's system and preferences.
 
+### High FPS profile and OptiFine
+
+Enable **FPSBoost** with **LowEnd-Mode**, **No-VSync**, and **Unlimited-FPS**.
+The profile uses fast graphics, VBOs, 4 chunks, minimal particles, no clouds,
+and no entity shadows. Renderers rebuild only when graphics, VBOs, lighting, or render
+distance actually changes. LowEnd-Mode also disables the Interface blur/bloom.
+Smooth Lighting already set to Off stays off.
+Turn off individual FPSBoost options to manage those video settings yourself.
+
+These optimizations use Forge/Minecraft APIs without requiring OptiFine classes
+or replacing its chunk renderer. For a packaged client, install an OptiFine build
+for **Minecraft 1.8.9** compatible with your Forge version in the launcher's
+`mods` directory. Do not put OptiFine in this project's `libs` directory, which
+is bundled into the Crine jar. OptiFine runtime compatibility still needs to be
+checked with the exact build you use; compiling Crine alone does not verify it.
+
+To compare performance, use the same world/server, position, camera direction,
+window size, resource pack, render distance, and modules. Let chunks finish
+loading, then record FPS for 60 seconds on both versions. Repeat with OptiFine
+enabled, including an area with many entities. Check block/entity targeting,
+creative reach, riding, FreeLook, and StreamerMode text replacement as well.
+400 FPS is 2.5 ms per frame; 500 FPS requires 2.0 ms. The changes reduce CPU work
+and allocations, but no 500 FPS result has been measured or guaranteed.
+
+Build with Java 8 using `./gradlew build` (Windows: `.\gradlew.bat build`).
+To keep Gradle's cache inside the workspace, add `-g .gradle-user-home`.
+
 ---
 
 ## Features

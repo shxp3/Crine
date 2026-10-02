@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinFontRenderer {
     @ModifyVariable(method ="renderString", at = @At("HEAD"), ordinal = 0)
     private String renderString(String string) {
-        if (string == null || Crine.eventManager == null)
+        if (string == null || Crine.eventManager == null || !Crine.eventManager.hasActiveHandlers(TextEvent.class))
             return string;
 
         final TextEvent textEvent = new TextEvent(string);
@@ -23,7 +23,7 @@ public abstract class MixinFontRenderer {
     }
     @ModifyVariable(method = "getStringWidth", at = @At("HEAD"), ordinal = 0)
     private String getStringWidth(String string) {
-        if (string == null || Crine.eventManager == null)
+        if (string == null || Crine.eventManager == null || !Crine.eventManager.hasActiveHandlers(TextEvent.class))
             return string;
 
         final TextEvent textEvent = new TextEvent(string);
